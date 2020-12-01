@@ -92,6 +92,11 @@ saveCalibration	KEYWORD2
 requestCalibrationStatus	KEYWORD2
 calibrationComplete	KEYWORD2
 
+tareAllAxes	KEYWORD2
+tareZAxis KEYWORD2
+sendTareCommand KEYWORD2
+persistTare KEYWORD2
+
 getTimeStamp	KEYWORD2
 getStepCount	KEYWORD2
 getStabilityClassifier	KEYWORD2

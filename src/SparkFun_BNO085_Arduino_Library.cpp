@@ -1035,6 +1035,18 @@ bool BNO085::calibrationComplete()
 	return (calibrationStatus == 0);
 }
 
+//Sends the command to tare along all axes
+void BNO085::tareAllAxes(uint8_t basisVector)
+{
+	sendTareCommand(TARE_ALL, basisVector);
+}
+
+//Sends the command to tare along the Z axis
+void BNO085::tareZAxis(uint8_t basisVector)
+{
+	sendTareCommand(TARE_Z, basisVector);
+}
+
 //Given a sensor's report ID, this tells the BNO085 to begin reporting the values
 void BNO085::setFeatureCommand(uint8_t reportID, long microsBetweenReports)
 {
@@ -1180,6 +1192,52 @@ void BNO085::saveCalibration()
 
 	//Using this shtpData packet, send a command
 	sendCommand(COMMAND_DCD); //Save DCD command
+}
+
+//This tells the BNO085 to tare
+//See page 45 of reference manual and Tare Function Document 1000-4045
+void BNO085::sendTareCommand(uint8_t axes, uint8_t basisVector)
+{
+	/*shtpData[3] = 0; //P0 - 0x00 - Subcommand: Tare Now
+	shtpData[4] = 0; //P1 - Bitmap of axes to tare
+	shtpData[5] = 0; //P2 - Rotation Vector to use as basis for tare
+	shtpData[6] = 0; //P3 - Reserved
+	shtpData[7] = 0; //P4 - Reserved
+	shtpData[8] = 0; //P5 - Reserved
+	shtpData[9] = 0; //P6 - Reserved
+	shtpData[10] = 0; //P7 - Reserved
+	shtpData[11] = 0; //P8 - Reserved*/
+
+	for (uint8_t x = 3; x < 12; x++) //Clear this section of the shtpData array
+		shtpData[x] = 0;
+
+	shtpData[4] = axes;
+	shtpData[5] = basisVector;
+
+	//Using this shtpData packet, send a command
+	sendCommand(COMMAND_TARE);
+}
+
+//This tells the BNO085 to persist the results of the last tare to flash
+void BNO085::persistTare()
+{
+	/*shtpData[3] = 0; //P0 - 0x01 - Subcommand: Persist Tare
+		shtpData[4] = 0; //P1 - Reserved
+		shtpData[5] = 0; //P2 - Reserved
+		shtpData[6] = 0; //P3 - Reserved
+		shtpData[7] = 0; //P4 - Reserved
+		shtpData[8] = 0; //P5 - Reserved
+		shtpData[9] = 0; //P6 - Reserved
+		shtpData[10] = 0; //P7 - Reserved
+		shtpData[11] = 0; //P8 - Reserved*/
+
+	for (uint8_t x = 3; x < 12; x++) //Clear this section of the shtpData array
+			shtpData[x] = 0;
+
+	shtpData[3] = 0x01;
+
+	//Using this shtpData packet, send a command
+	sendCommand(COMMAND_TARE);
 }
 
 //Wait a certain time for incoming I2C bytes before giving up
