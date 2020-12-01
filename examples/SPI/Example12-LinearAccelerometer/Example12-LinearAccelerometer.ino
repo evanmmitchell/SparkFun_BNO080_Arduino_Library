@@ -1,5 +1,5 @@
 /*
-  Using the BNO080 IMU
+  Using the BNO085 IMU
   By: Nathan Seidle
   SparkFun Electronics
   Date: December 21st, 2017
@@ -18,8 +18,8 @@
 
 #include <Wire.h>
 
-#include "SparkFun_BNO080_Arduino_Library.h" // Click here to get the library: http://librarymanager/All#SparkFun_BNO080
-BNO080 myIMU;
+#include "SparkFun_BNO085_Arduino_Library.h" // Click here to get the library: http://librarymanager/All#SparkFun_BNO080
+BNO085 myIMU;
 
 //These pins can be any GPIO
 byte imuCSPin = 10;
@@ -31,12 +31,12 @@ void setup()
 {
   Serial.begin(115200);
   Serial.println();
-  Serial.println("BNO080 Read Example");
+  Serial.println("BNO085 Read Example");
 
-  //Setup BNO080 to use SPI interface with default SPI port and max BNO080 clk speed of 3MHz
+  //Setup BNO085 to use SPI interface with default SPI port and max BNO085 clk speed of 3MHz
   myIMU.beginSPI(imuCSPin, imuWAKPin, imuINTPin, imuRSTPin);
 
-  myIMU.enableLinearAccelerometer(50); //Send data update every 50ms
+  myIMU.enableLinearAccelerometer(50000); //Send data update every 50ms
 
   Serial.println(F("Linear Accelerometer enabled"));
   Serial.println(F("Output in form x, y, z, in m/s^2"));

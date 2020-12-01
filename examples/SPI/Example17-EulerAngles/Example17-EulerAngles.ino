@@ -1,5 +1,5 @@
 /*
-  Using the BNO080 IMU
+  Using the BNO085 IMU
 
   Example : Euler Angles
   By: Paul Clark
@@ -19,7 +19,7 @@
   https://en.wikipedia.org/wiki/Conversion_between_quaternions_and_Euler_angles
   https://github.com/sparkfun/SparkFun_MPU-9250-DMP_Arduino_Library/issues/5#issuecomment-306509440
 
-  This example shows how to use the SPI interface on the BNO080. It's fairly involved
+  This example shows how to use the SPI interface on the BNO085. It's fairly involved
   and requires 7 comm wires (plus 2 power), soldering the PS1 jumper, and clearing
   the I2C jumper. We recommend using the Qwiic I2C interface, but if you need speed
   SPI is the way to go.
@@ -30,9 +30,9 @@
   The I2C pull up jumper must be cleared/open
 
   Hardware Connections:
-  Don't hook the BNO080 to a normal 5V Uno! Either use the Qwiic system or use a
+  Don't hook the BNO085 to a normal 5V Uno! Either use the Qwiic system or use a
   microcontroller that runs at 3.3V.
-  Arduino 13 = BNO080 SCK
+  Arduino 13 = BNO085 SCK
   12 = SO
   11 = SI
   10 = !CS
@@ -45,8 +45,8 @@
 
 #include <SPI.h>
 
-#include "SparkFun_BNO080_Arduino_Library.h" // Click here to get the library: http://librarymanager/All#SparkFun_BNO080
-BNO080 myIMU;
+#include "SparkFun_BNO085_Arduino_Library.h" // Click here to get the library: http://librarymanager/All#SparkFun_BNO080
+BNO085 myIMU;
 
 //These pins can be any GPIO
 byte imuCSPin = 10;
@@ -58,13 +58,13 @@ void setup()
 {
   Serial.begin(115200);
   Serial.println();
-  Serial.println(F("BNO080 SPI Read Example"));
+  Serial.println(F("BNO085 SPI Read Example"));
 
   myIMU.enableDebugging(Serial); //Pipe debug messages to Serial port
 
   if(myIMU.beginSPI(imuCSPin, imuWAKPin, imuINTPin, imuRSTPin) == false)
   {
-    Serial.println(F("BNO080 over SPI not detected. Are you sure you have all 6 connections? Freezing..."));
+    Serial.println(F("BNO085 over SPI not detected. Are you sure you have all 6 connections? Freezing..."));
     while(1)
       ;
   }
@@ -76,7 +76,7 @@ void setup()
   //The IMU is now connected over SPI
   //Please see the other examples for library functions that you can call
 
-  myIMU.enableRotationVector(50); //Send data update every 50ms
+  myIMU.enableRotationVector(50000); //Send data update every 50ms
 
   Serial.println(F("Rotation vector enabled"));
   Serial.println(F("Output in form roll, pitch, yaw"));

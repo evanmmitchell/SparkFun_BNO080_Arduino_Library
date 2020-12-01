@@ -1,5 +1,5 @@
 /*
-  Using the BNO080 IMU
+  Using the BNO085 IMU
   By: Nathan Seidle
   SparkFun Electronics
   Date: July 27th, 2018
@@ -20,9 +20,9 @@
   The I2C pull up jumper must be cleared/open
 
   Hardware Connections:
-  Don't hook the BNO080 to a normal 5V Uno! Either use the Qwiic system or use a
+  Don't hook the BNO085 to a normal 5V Uno! Either use the Qwiic system or use a
   microcontroller that runs at 3.3V.
-  Arduino 13 = BNO080 SCK
+  Arduino 13 = BNO085 SCK
   12 = SO
   11 = SI
   10 = !CS
@@ -35,8 +35,8 @@
 
 #include <SPI.h>
 
-#include "SparkFun_BNO080_Arduino_Library.h" // Click here to get the library: http://librarymanager/All#SparkFun_BNO080
-BNO080 myIMU;
+#include "SparkFun_BNO085_Arduino_Library.h" // Click here to get the library: http://librarymanager/All#SparkFun_BNO080
+BNO085 myIMU;
 
 //These pins can be any GPIO
 byte imuCSPin = 10;
@@ -48,13 +48,13 @@ void setup()
 {
   Serial.begin(115200);
   Serial.println();
-  Serial.println("BNO080 SPI Read Example");
+  Serial.println("BNO085 SPI Read Example");
 
   myIMU.enableDebugging(Serial); //Pipe debug messages to Serial port
 
   if (myIMU.beginSPI(imuCSPin, imuWAKPin, imuINTPin, imuRSTPin) == false)
   {
-    Serial.println("BNO080 over SPI not detected. Are you sure you have all 6 connections? Freezing...");
+    Serial.println("BNO085 over SPI not detected. Are you sure you have all 6 connections? Freezing...");
     while (1);
   }
 
@@ -65,8 +65,8 @@ void setup()
   //The IMU is now connected over SPI
   //Please see the other examples for library functions that you can call
 
-  myIMU.enableAccelerometer(10); //Send data update at 100Hz
-  myIMU.enableRotationVector(10); //Send data update at 100Hz
+  myIMU.enableAccelerometer(100000); //Send data update at 100Hz
+  myIMU.enableRotationVector(100000); //Send data update at 100Hz
 
   Serial.println(F("Rotation vector enabled"));
   Serial.println(F("Output in form i, j, k, real, accuracy"));
