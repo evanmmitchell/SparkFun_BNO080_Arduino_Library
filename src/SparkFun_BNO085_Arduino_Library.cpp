@@ -229,7 +229,7 @@ void BNO085::parseCommandReport(void)
 		//The BNO085 responds with this report to command requests. It's up to us to remember which command we issued.
 		uint8_t command = shtpData[2]; //This is the Command byte of the response
 
-		if (command == COMMAND_ME_CALIBRATE)
+		if (command == COMMAND_ME_CALIBRATE || command == COMMAND_DCD)
 		{
 			calibrationStatus = shtpData[5 + 0]; //R0 - Status (0 = success, non-zero = fail)
 		}
@@ -375,24 +375,6 @@ void BNO085::parseInputReport(void)
 		memsRawMagX = data1;
 		memsRawMagY = data2;
 		memsRawMagZ = data3;
-	}
-		else if (shtpData[5] == SHTP_REPORT_COMMAND_RESPONSE)
-	{
-		if (_printDebug == true)
-		{
-			_debugPort->println(F("!"));
-		}
-		//The BNO080 responds with this report to command requests. It's up to use to remember which command we issued.
-		uint8_t command = shtpData[5 + 2]; //This is the Command byte of the response
-
-		if (command == COMMAND_ME_CALIBRATE)
-		{
-			if (_printDebug == true)
-			{
-				_debugPort->println(F("ME Cal report found!"));
-			}
-			calibrationStatus = shtpData[5 + 5]; //R0 - Status (0 = success, non-zero = fail)
-		}
 	}
 	else
 	{
@@ -1050,10 +1032,8 @@ void BNO085::endCalibration()
 //Byte 5 is parsed during the readPacket and stored in calibrationStatus
 bool BNO085::calibrationComplete()
 {
-	if (calibrationStatus == 0)
-		return (true);
-	return (false);
-	}
+	return (calibrationStatus == 0);
+}
 
 //Given a sensor's report ID, this tells the BNO085 to begin reporting the values
 void BNO085::setFeatureCommand(uint8_t reportID, long microsBetweenReports)
@@ -1171,6 +1151,9 @@ void BNO085::requestCalibrationStatus()
 
 	shtpData[6] = 0x01; //P3 - 0x01 - Subcommand: Get ME Calibration
 
+	//Make the internal calStatus variable non-zero (operation failed) so that user can test while we wait
+	calibrationStatus = 1;
+
 	//Using this shtpData packet, send a command
 	sendCommand(COMMAND_ME_CALIBRATE);
 }
@@ -1191,6 +1174,9 @@ void BNO085::saveCalibration()
 
 	for (uint8_t x = 3; x < 12; x++) //Clear this section of the shtpData array
 		shtpData[x] = 0;
+
+	//Make the internal calStatus variable non-zero (operation failed) so that user can test while we wait
+	calibrationStatus = 1;
 
 	//Using this shtpData packet, send a command
 	sendCommand(COMMAND_DCD); //Save DCD command

@@ -23,11 +23,12 @@
 
 #include "SparkFun_BNO085_Arduino_Library.h" // Click here to get the library: http://librarymanager/All#SparkFun_BNO080
 BNO085 myIMU;
+bool calibrationSaved = false;
 
 void setup()
 {
   Serial.begin(115200);
-  Serial.println();
+    Serial.println();
   Serial.println("BNO085 Read Example");
 
   Wire.begin();
@@ -40,95 +41,86 @@ void setup()
   myIMU.calibrateAll(); //Turn on cal for Accel, Gyro, and Mag
 
   //Enable Game Rotation Vector output
-  myIMU.enableGameRotationVector(100000); //Send data update every 100ms
+  myIMU.enableGameRotationVector(50000); //Send data update every 50ms as specified in calibration procedures
 
   //Enable Magnetic Field output
-  myIMU.enableMagnetometer(100000); //Send data update every 100ms
+  myIMU.enableMagnetometer(50000); //Send data update every 50ms as specified in calibration procedures
 
   //Once magnetic field is 2 or 3, run the Save DCD Now command
   Serial.println(F("Calibrating. Press 's' to save to flash"));
-  Serial.println(F("Output in form x, y, z, in uTesla"));
+  while (!calibrationSaved)
+  {
+    //Look for reports from the IMU
+    if (myIMU.dataAvailable())
+    {
+      float x = myIMU.getMagX();
+      float y = myIMU.getMagY();
+      float z = myIMU.getMagZ();
+      byte accuracy = myIMU.getMagAccuracy();
+
+      float quatI = myIMU.getQuatI();
+      float quatJ = myIMU.getQuatJ();
+      float quatK = myIMU.getQuatK();
+      float quatReal = myIMU.getQuatReal();
+      byte sensorAccuracy = myIMU.getQuatAccuracy();
+
+      Serial.print(x, 2);
+      Serial.print(F(","));
+      Serial.print(y, 2);
+      Serial.print(F(","));
+      Serial.print(z, 2);
+      Serial.print(F(","));
+      printAccuracyLevel(accuracy);
+      Serial.print(F(","));
+
+      Serial.print("\t");
+
+      Serial.print(quatI, 2);
+      Serial.print(F(","));
+      Serial.print(quatJ, 2);
+      Serial.print(F(","));
+      Serial.print(quatK, 2);
+      Serial.print(F(","));
+      Serial.print(quatReal, 2);
+      Serial.print(F(","));
+      printAccuracyLevel(sensorAccuracy);
+      Serial.print(F(","));
+
+      Serial.println();
+    }
+
+    if (Serial.available())
+    {
+      byte incoming = Serial.read();
+      if (incoming == 's')
+      {
+        myIMU.saveCalibration(); //Saves the current dynamic calibration data (DCD) to memory
+
+        //Wait for calibration response, timeout if no response
+        for (int i = 100; i > 0; i--)
+        {
+          if (myIMU.dataAvailable() && myIMU.calibrationComplete())
+          {
+            Serial.println("Calibration data successfully stored");
+            calibrationSaved = true;
+
+            //myIMU.endCalibration(); //Turns off all calibration
+            //In general, calibration should be left on at all times. The BNO085
+            //auto-calibrates and auto-records cal data roughly every 5 minutes
+
+            return;
+          }
+          delay(1);
+        }
+        Serial.println("Calibration data failed to store. Please try again.");
+        delay(1000);
+      }
+    }
+  }
 }
 
 void loop()
 {
-  if(Serial.available())
-  {
-    byte incoming = Serial.read();
-
-    if(incoming == 's')
-    {
-      myIMU.saveCalibration(); //Saves the current dynamic calibration data (DCD) to memory
-      myIMU.requestCalibrationStatus(); //Sends command to get the latest calibration status
-
-      //Wait for calibration response, timeout if no response
-      int counter = 100;
-      while(1)
-      {
-        if(--counter == 0) break;
-        if(myIMU.dataAvailable() == true)
-        {
-          //The IMU can report many different things. We must wait
-          //for the ME Calibration Response Status byte to go to zero
-          if(myIMU.calibrationComplete() == true)
-          {
-            Serial.println("Calibration data successfully stored");
-            delay(1000);
-            break;
-          }
-        }
-
-        delay(1);
-      }
-      if(counter == 0)
-      {
-        Serial.println("Calibration data failed to store. Please try again.");
-      }
-
-      //myIMU.endCalibration(); //Turns off all calibration
-      //In general, calibration should be left on at all times. The BNO085
-      //auto-calibrates and auto-records cal data roughly every 5 minutes
-    }
-  }
-
-  //Look for reports from the IMU
-  if (myIMU.dataAvailable() == true)
-  {
-    float x = myIMU.getMagX();
-    float y = myIMU.getMagY();
-    float z = myIMU.getMagZ();
-    byte accuracy = myIMU.getMagAccuracy();
-
-    float quatI = myIMU.getQuatI();
-    float quatJ = myIMU.getQuatJ();
-    float quatK = myIMU.getQuatK();
-    float quatReal = myIMU.getQuatReal();
-    byte sensorAccuracy = myIMU.getQuatAccuracy();
-
-    Serial.print(x, 2);
-    Serial.print(F(","));
-    Serial.print(y, 2);
-    Serial.print(F(","));
-    Serial.print(z, 2);
-    Serial.print(F(","));
-    printAccuracyLevel(accuracy);
-    Serial.print(F(","));
-
-    Serial.print("\t");
-
-    Serial.print(quatI, 2);
-    Serial.print(F(","));
-    Serial.print(quatJ, 2);
-    Serial.print(F(","));
-    Serial.print(quatK, 2);
-    Serial.print(F(","));
-    Serial.print(quatReal, 2);
-    Serial.print(F(","));
-    printAccuracyLevel(sensorAccuracy);
-    Serial.print(F(","));
-
-    Serial.println();
-  }
 }
 
 //Given a accuracy number, print what it means
