@@ -1,5 +1,5 @@
 /*
-  Using the BNO080 IMU
+  Using the BNO085 IMU
   By: Nathan Seidle
   SparkFun Electronics
   Date: December 21st, 2017
@@ -12,7 +12,7 @@
   https://en.wikipedia.org/wiki/Quaternions_and_spatial_rotation
 
   It takes about 1ms at 400kHz I2C to read a record from the sensor, but we are polling the sensor continually
-  between updates from the sensor. Use the interrupt pin on the BNO080 breakout to avoid polling.
+  between updates from the sensor. Use the interrupt pin on the BNO085 breakout to avoid polling.
 
   Hardware Connections:
   Attach the Qwiic Shield to your Arduino/Photon/ESP32 or other
@@ -22,21 +22,21 @@
 
 #include <Wire.h>
 
-#include "SparkFun_BNO080_Arduino_Library.h" // Click here to get the library: http://librarymanager/All#SparkFun_BNO080
-BNO080 myIMU;
+#include "SparkFun_BNO085_Arduino_Library.h" // Click here to get the library: http://librarymanager/All#SparkFun_BNO080
+BNO085 myIMU;
 
 void setup()
 {
   Serial.begin(9600);
   Serial.println();
-  Serial.println("BNO080 Read Example");
+  Serial.println("BNO085 Read Example");
 
   Wire.begin();
 
   //Are you using a ESP? Check this issue for more information: https://github.com/sparkfun/SparkFun_BNO080_Arduino_Library/issues/16
 //  //=================================
 //  delay(100); //  Wait for BNO to boot
-//  // Start i2c and BNO080
+//  // Start i2c and BNO085
 //  Wire.flush();   // Reset I2C
 //  IMU.begin(BNO080_DEFAULT_ADDRESS, Wire);
 //  Wire.begin(4, 5);
@@ -45,13 +45,13 @@ void setup()
 
   if (myIMU.begin() == false)
   {
-    Serial.println("BNO080 not detected at default I2C address. Check your jumpers and the hookup guide. Freezing...");
+    Serial.println("BNO085 not detected at default I2C address. Check your jumpers and the hookup guide. Freezing...");
     while (1);
   }
 
   Wire.setClock(400000); //Increase I2C data rate to 400kHz
 
-  myIMU.enableRotationVector(50); //Send data update every 50ms
+  myIMU.enableRotationVector(50000); //Send data update every 50ms
 
   Serial.println(F("Rotation vector enabled"));
   Serial.println(F("Output in form i, j, k, real, accuracy"));

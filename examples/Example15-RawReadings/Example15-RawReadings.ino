@@ -1,5 +1,5 @@
 /*
-  Using the BNO080 IMU
+  Using the BNO085 IMU
   By: Nathan Seidle
   SparkFun Electronics
   Date: December 21st, 2017
@@ -18,14 +18,14 @@
 
 #include <Wire.h>
 
-#include "SparkFun_BNO080_Arduino_Library.h" // Click here to get the library: http://librarymanager/All#SparkFun_BNO080
-BNO080 myIMU;
+#include "SparkFun_BNO085_Arduino_Library.h" // Click here to get the library: http://librarymanager/All#SparkFun_BNO080
+BNO085 myIMU;
 
 void setup()
 {
     Serial.begin(115200);
     Serial.println();
-    Serial.println("BNO080 Read Example");
+    Serial.println("BNO085 Read Example");
 
     Wire.begin();
 
@@ -33,12 +33,12 @@ void setup()
 
     Wire.setClock(400000); //Increase I2C data rate to 400kHz
 
-    myIMU.enableAccelerometer(50);    //We must enable the accel in order to get MEMS readings even if we don't read the reports.
-    myIMU.enableRawAccelerometer(50); //Send data update every 50ms
-    myIMU.enableGyro(50);
-    myIMU.enableRawGyro(50);
-    myIMU.enableMagnetometer(50);
-    myIMU.enableRawMagnetometer(50);
+    myIMU.enableAccelerometer(50000);    //We must enable the accel in order to get MEMS readings even if we don't read the reports.
+    myIMU.enableRawAccelerometer(50000); //Send data update every 50ms
+    myIMU.enableGyro(50000);
+    myIMU.enableRawGyro(50000);
+    myIMU.enableMagnetometer(50000);
+    myIMU.enableRawMagnetometer(50000);
 
     Serial.println(F("Raw MEMS readings enabled"));
     Serial.println(F("Output is: (accel) x y z (gyro) x y z (mag) x y z"));

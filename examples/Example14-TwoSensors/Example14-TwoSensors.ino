@@ -1,5 +1,5 @@
 /*
-  Using the BNO080 IMU
+  Using the BNO085 IMU
   By: Nathan Seidle
   SparkFun Electronics
   Date: December 21st, 2017
@@ -12,7 +12,7 @@
   https://en.wikipedia.org/wiki/Quaternions_and_spatial_rotation
 
   It takes about 1ms at 400kHz I2C to read a record from the sensor, but we are polling the sensor continually
-  between updates from the sensor. Use the interrupt pin on the BNO080 breakout to avoid polling.
+  between updates from the sensor. Use the interrupt pin on the BNO085 breakout to avoid polling.
 
   Hardware Connections:
   Attach the Qwiic Shield to your Arduino/Photon/ESP32 or other
@@ -22,15 +22,15 @@
 
 #include <Wire.h>
 
-#include "SparkFun_BNO080_Arduino_Library.h" // Click here to get the library: http://librarymanager/All#SparkFun_BNO080
-BNO080 myIMU1; //Open I2C ADR jumper - goes to address 0x4B
-BNO080 myIMU2; //Closed I2C ADR jumper - goes to address 0x4A
+#include "SparkFun_BNO085_Arduino_Library.h" // Click here to get the library: http://librarymanager/All#SparkFun_BNO080
+BNO085 myIMU1; //Open I2C ADR jumper - goes to address 0x4B
+BNO085 myIMU2; //Closed I2C ADR jumper - goes to address 0x4A
 
 void setup()
 {
   Serial.begin(115200);
   Serial.println();
-  Serial.println("BNO080 Read Example");
+  Serial.println("BNO085 Read Example");
 
   Wire.begin();
   Wire.setClock(400000); //Increase I2C data rate to 400kHz
@@ -41,18 +41,18 @@ void setup()
   //Start 2 sensors
   if (myIMU1.begin(0x4B) == false)
   {
-    Serial.println("First BNO080 not detected with I2C ADR jumper open. Check your jumpers and the hookup guide. Freezing...");
+    Serial.println("First BNO085 not detected with I2C ADR jumper open. Check your jumpers and the hookup guide. Freezing...");
     while(1);
   }
 
   if (myIMU2.begin(0x4A) == false)
   {
-    Serial.println("Second BNO080 not detected with I2C ADR jumper closed. Check your jumpers and the hookup guide. Freezing...");
+    Serial.println("Second BNO085 not detected with I2C ADR jumper closed. Check your jumpers and the hookup guide. Freezing...");
     while(1);
   }
 
-  myIMU1.enableRotationVector(50); //Send data update every 50ms
-  myIMU2.enableRotationVector(50); //Send data update every 50ms
+  myIMU1.enableRotationVector(50000); //Send data update every 50ms
+  myIMU2.enableRotationVector(50000); //Send data update every 50ms
 
   Serial.println(F("Rotation vector enabled"));
   Serial.println(F("Output in form i, j, k, real, accuracy"));

@@ -1,5 +1,5 @@
 /*
-  Using the BNO080 IMU
+  Using the BNO085 IMU
   By: Nathan Seidle
   SparkFun Electronics
   Date: December 21st, 2017
@@ -11,7 +11,7 @@
   This example shows how to calibrate the sensor. See document 1000-4044.
 
   It takes about 1ms at 400kHz I2C to read a record from the sensor, but we are polling the sensor continually
-  between updates from the sensor. Use the interrupt pin on the BNO080 breakout to avoid polling.
+  between updates from the sensor. Use the interrupt pin on the BNO085 breakout to avoid polling.
 
   Hardware Connections:
   Attach the Qwiic Shield to your Arduino/Photon/ESP32 or other
@@ -21,14 +21,14 @@
 
 #include <Wire.h>
 
-#include "SparkFun_BNO080_Arduino_Library.h" // Click here to get the library: http://librarymanager/All#SparkFun_BNO080
-BNO080 myIMU;
+#include "SparkFun_BNO085_Arduino_Library.h" // Click here to get the library: http://librarymanager/All#SparkFun_BNO080
+BNO085 myIMU;
 
 void setup()
 {
   Serial.begin(115200);
   Serial.println();
-  Serial.println("BNO080 Read Example");
+  Serial.println("BNO085 Read Example");
 
   Wire.begin();
 
@@ -40,10 +40,10 @@ void setup()
   myIMU.calibrateAll(); //Turn on cal for Accel, Gyro, and Mag
 
   //Enable Game Rotation Vector output
-  myIMU.enableGameRotationVector(100); //Send data update every 100ms
+  myIMU.enableGameRotationVector(100000); //Send data update every 100ms
 
   //Enable Magnetic Field output
-  myIMU.enableMagnetometer(100); //Send data update every 100ms
+  myIMU.enableMagnetometer(100000); //Send data update every 100ms
 
   //Once magnetic field is 2 or 3, run the Save DCD Now command
   Serial.println(F("Calibrating. Press 's' to save to flash"));
@@ -86,7 +86,7 @@ void loop()
       }
 
       //myIMU.endCalibration(); //Turns off all calibration
-      //In general, calibration should be left on at all times. The BNO080
+      //In general, calibration should be left on at all times. The BNO085
       //auto-calibrates and auto-records cal data roughly every 5 minutes
     }
   }

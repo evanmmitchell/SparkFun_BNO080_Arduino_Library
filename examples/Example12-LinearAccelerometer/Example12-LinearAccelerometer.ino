@@ -1,5 +1,5 @@
 /*
-  Using the BNO080 IMU
+  Using the BNO085 IMU
   By: Nathan Seidle
   SparkFun Electronics
   Date: December 21st, 2017
@@ -18,14 +18,14 @@
 
 #include <Wire.h>
 
-#include "SparkFun_BNO080_Arduino_Library.h" // Click here to get the library: http://librarymanager/All#SparkFun_BNO080
-BNO080 myIMU;
+#include "SparkFun_BNO085_Arduino_Library.h" // Click here to get the library: http://librarymanager/All#SparkFun_BNO080
+BNO085 myIMU;
 
 void setup()
 {
   Serial.begin(115200);
   Serial.println();
-  Serial.println("BNO080 Read Example");
+  Serial.println("BNO085 Read Example");
 
   Wire.begin();
 
@@ -33,7 +33,7 @@ void setup()
 
   Wire.setClock(400000); //Increase I2C data rate to 400kHz
 
-  myIMU.enableLinearAccelerometer(50); //Send data update every 50ms
+  myIMU.enableLinearAccelerometer(50000); //Send data update every 50ms
 
   Serial.println(F("Linear Accelerometer enabled"));
   Serial.println(F("Output in form x, y, z, in m/s^2"));

@@ -1,16 +1,16 @@
 /*
-  This is a library written for the BNO080
+  This is a library written for the BNO085
   SparkFun sells these at its website: www.sparkfun.com
   Do you like this library? Help support SparkFun. Buy a board!
   https://www.sparkfun.com/products/14686
 
   Written by Nathan Seidle @ SparkFun Electronics, December 28th, 2017
 
-  The BNO080 IMU is a powerful triple axis gyro/accel/magnetometer coupled with an ARM processor
+  The BNO085 IMU is a powerful triple axis gyro/accel/magnetometer coupled with an ARM processor
   to maintain and complete all the complex calculations for various VR, inertial, step counting,
   and movement operations.
 
-  This library handles the initialization of the BNO080 and is able to query the sensor
+  This library handles the initialization of the BNO085 and is able to query the sensor
   for different readings.
 
   https://github.com/sparkfun/SparkFun_BNO080_Arduino_Library
@@ -38,8 +38,8 @@
 #include <Wire.h>
 #include <SPI.h>
 
-//The default I2C address for the BNO080 on the SparkX breakout is 0x4B. 0x4A is also possible.
-#define BNO080_DEFAULT_ADDRESS 0x4B
+//The default I2C address for the BNO085 is 0x4A. 0x4B is also possible.
+#define BNO085_DEFAULT_ADDRESS 0x4A
 
 //Platform specific configurations
 
@@ -66,7 +66,7 @@ const byte CHANNEL_REPORTS = 3;
 const byte CHANNEL_WAKE_REPORTS = 4;
 const byte CHANNEL_GYRO = 5;
 
-//All the ways we can configure or talk to the BNO080, figure 34, page 36 reference manual
+//All the ways we can configure or talk to the BNO085, figure 34, page 36 reference manual
 //These are used for low level communication with the sensor, on channel 2
 #define SHTP_REPORT_COMMAND_RESPONSE 0xF1
 #define SHTP_REPORT_COMMAND_REQUEST 0xF2
@@ -127,11 +127,11 @@ const byte CHANNEL_GYRO = 5;
 #define MAX_PACKET_SIZE 128 //Packets can be up to 32k but we don't have that much RAM.
 #define MAX_METADATA_SIZE 9 //This is in words. There can be many but we mostly only care about the first 9 (Qs, range, etc)
 
-class BNO080
+class BNO085
 {
 public:
-	boolean begin(uint8_t deviceAddress = BNO080_DEFAULT_ADDRESS, TwoWire &wirePort = Wire, uint8_t intPin = 255); //By default use the default I2C addres, and use Wire port, and don't declare an INT pin
-	boolean beginSPI(uint8_t user_CSPin, uint8_t user_WAKPin, uint8_t user_INTPin, uint8_t user_RSTPin, uint32_t spiPortSpeed = 3000000, SPIClass &spiPort = SPI);
+	bool begin(uint8_t deviceAddress = BNO085_DEFAULT_ADDRESS, TwoWire &wirePort = Wire, uint8_t intPin = 255); //By default use the default I2C addres, and use Wire port, and don't declare an INT pin
+	bool beginSPI(uint8_t user_CSPin, uint8_t user_WAKPin, uint8_t user_INTPin, uint8_t user_RSTPin, uint32_t spiPortSpeed = 3000000, SPIClass &spiPort = SPI);
 
 	void enableDebugging(Stream &debugPort = Serial); //Turn on debug printing. If user doesn't specify then Serial will be used.
 
@@ -140,29 +140,29 @@ public:
 
 	float qToFloat(int16_t fixedPointValue, uint8_t qPoint); //Given a Q value, converts fixed point floating to regular floating point number
 
-	boolean waitForI2C(); //Delay based polling for I2C traffic
-	boolean waitForSPI(); //Delay based polling for INT pin to go low
-	boolean receivePacket(void);
-	boolean getData(uint16_t bytesRemaining); //Given a number of bytes, send the requests in I2C_BUFFER_LENGTH chunks
-	boolean sendPacket(uint8_t channelNumber, uint8_t dataLength);
+	bool waitForI2C(); //Delay based polling for I2C traffic
+	bool waitForSPI(); //Delay based polling for INT pin to go low
+	bool receivePacket(void);
+	bool getData(uint16_t bytesRemaining); //Given a number of bytes, send the requests in I2C_BUFFER_LENGTH chunks
+	bool sendPacket(uint8_t channelNumber, uint8_t dataLength);
 	void printPacket(void); //Prints the current shtp header and data packets
 	void printHeader(void); //Prints the current shtp header (only)
 
-	void enableRotationVector(uint16_t timeBetweenReports);
-	void enableGameRotationVector(uint16_t timeBetweenReports);
-	void enableARVRStabilizedRotationVector(uint16_t timeBetweenReports);
-	void enableARVRStabilizedGameRotationVector(uint16_t timeBetweenReports);
-	void enableAccelerometer(uint16_t timeBetweenReports);
-	void enableLinearAccelerometer(uint16_t timeBetweenReports);
-	void enableGyro(uint16_t timeBetweenReports);
-	void enableMagnetometer(uint16_t timeBetweenReports);
-	void enableStepCounter(uint16_t timeBetweenReports);
-	void enableStabilityClassifier(uint16_t timeBetweenReports);
-	void enableActivityClassifier(uint16_t timeBetweenReports, uint32_t activitiesToEnable, uint8_t (&activityConfidences)[9]);
-	void enableRawAccelerometer(uint16_t timeBetweenReports);
-	void enableRawGyro(uint16_t timeBetweenReports);
-	void enableRawMagnetometer(uint16_t timeBetweenReports);
-	void enableGyroIntegratedRotationVector(uint16_t timeBetweenReports);
+	void enableRotationVector(long microsBetweenReports);
+	void enableGameRotationVector(long microsBetweenReports);
+	void enableARVRStabilizedRotationVector(long microsBetweenReports);
+	void enableARVRStabilizedGameRotationVector(long microsBetweenReports);
+	void enableAccelerometer(long microsBetweenReports);
+	void enableLinearAccelerometer(long microsBetweenReports);
+	void enableGyro(long microsBetweenReports);
+	void enableMagnetometer(long microsBetweenReports);
+	void enableStepCounter(long microsBetweenReports);
+	void enableStabilityClassifier(long microsBetweenReports);
+	void enableActivityClassifier(long microsBetweenReports, uint32_t activitiesToEnable, uint8_t (&activityConfidences)[9]);
+	void enableRawAccelerometer(long microsBetweenReports);
+	void enableRawGyro(long microsBetweenReports);
+	void enableRawMagnetometer(long microsBetweenReports);
+	void enableGyroIntegratedRotationVector(long microsBetweenReports);
 
 	bool dataAvailable(void);
 	void parseInputReport(void);   //Parse sensor readings out of report
@@ -207,7 +207,7 @@ public:
 	void endCalibration();
 	void saveCalibration();
 	void requestCalibrationStatus(); //Sends command to get status
-	boolean calibrationComplete();   //Checks ME Cal response for byte 5, R0 - Status
+	bool calibrationComplete();   //Checks ME Cal response for byte 5, R0 - Status
 
 	uint32_t getTimeStamp();
 	uint16_t getStepCount();
@@ -230,8 +230,8 @@ public:
 	float getPitch();
 	float getYaw();
 
-	void setFeatureCommand(uint8_t reportID, uint16_t timeBetweenReports);
-	void setFeatureCommand(uint8_t reportID, uint16_t timeBetweenReports, uint32_t specificConfig);
+	void setFeatureCommand(uint8_t reportID, long microsBetweenReports);
+	void setFeatureCommand(uint8_t reportID, long microsBetweenReports, uint32_t specificConfig);
 	void sendCommand(uint8_t command);
 	void sendCalibrateCommand(uint8_t thingToCalibrate);
 
@@ -258,7 +258,7 @@ private:
 	uint8_t _deviceAddress; //Keeps track of I2C address. setI2CAddress changes this.
 
 	Stream *_debugPort;			 //The stream to send debug messages to if enabled. Usually Serial.
-	boolean _printDebug = false; //Flag to print debugging variables
+	bool _printDebug = false; //Flag to print debugging variables
 
 	SPIClass *_spiPort;			 //The generic connection to user's chosen SPI hardware
 	unsigned long _spiPortSpeed; //Optional user defined port speed
