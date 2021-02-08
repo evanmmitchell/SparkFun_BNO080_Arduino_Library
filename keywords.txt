@@ -105,8 +105,8 @@ persistTare KEYWORD2
 
 getTimeStamp	KEYWORD2
 getStepCount	KEYWORD2
-getStabilityClassifier	KEYWORD2
-getActivityClassifier	KEYWORD2
+getStabilityClassification	KEYWORD2
+getActivityClassification KEYWORD2
 
 setFeatureCommand	KEYWORD2
 setFeatureCommand	KEYWORD2

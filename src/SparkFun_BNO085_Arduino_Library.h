@@ -225,8 +225,8 @@ public:
 
 	uint32_t getTimeStamp();
 	uint16_t getStepCount();
-	uint8_t getStabilityClassifier();
-	uint8_t getActivityClassifier();
+	uint8_t getStabilityClassification();
+	uint8_t getActivityClassification();
 
 	int16_t getRawAccelX();
 	int16_t getRawAccelY();

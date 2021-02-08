@@ -51,7 +51,7 @@ void loop()
   //Look for reports from the IMU
   if (myIMU.dataAvailable() == true)
   {
-    byte classification = myIMU.getStabilityClassifier();
+    byte classification = myIMU.getStabilityClassification();
 
     if(classification == 0) Serial.print(F("Unknown classification"));
     else if(classification == 1) Serial.print(F("On table"));

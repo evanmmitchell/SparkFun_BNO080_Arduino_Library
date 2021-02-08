@@ -706,13 +706,13 @@ uint16_t BNO085::getStepCount()
 }
 
 //Return the stability classifier
-uint8_t BNO085::getStabilityClassifier()
+uint8_t BNO085::getStabilityClassification()
 {
 	return (stabilityClassifier);
 }
 
 //Return the activity classifier
-uint8_t BNO085::getActivityClassifier()
+uint8_t BNO085::getActivityClassification()
 {
 	return (activityClassifier);
 }

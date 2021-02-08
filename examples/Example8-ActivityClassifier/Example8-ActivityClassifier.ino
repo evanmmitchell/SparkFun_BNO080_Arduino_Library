@@ -65,9 +65,9 @@ void loop()
   //Look for reports from the IMU
   if (myIMU.dataAvailable() == true)
   {
-    //getActivityClassifier will modify our activityConfidences array
+    //getActivityClassification will modify our activityConfidences array
     //It will return the most likely activity as well.
-    byte mostLikelyActivity = myIMU.getActivityClassifier();
+    byte mostLikelyActivity = myIMU.getActivityClassification();
 
     Serial.print("Most likely activity: ");
     printActivityName(mostLikelyActivity);
