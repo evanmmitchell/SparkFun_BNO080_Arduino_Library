@@ -19,6 +19,8 @@ enableDebugging	KEYWORD2
 
 softReset	KEYWORD2
 resetReason	KEYWORD2
+modeOn	KEYWORD2
+modeSleep	KEYWORD2
 
 qToFloat	KEYWORD2
 
@@ -37,6 +39,7 @@ enableARVRStabilizedGameRotationVector	KEYWORD2
 enableAccelerometer	KEYWORD2
 enableGyro	KEYWORD2
 enableMagnetometer	KEYWORD2
+enableTapDetector	KEYWORD2
 enableStepCounter	KEYWORD2
 enableStabilityClassifier	KEYWORD2
 enableActivityClassifier	KEYWORD2
@@ -103,6 +106,7 @@ tareZAxis KEYWORD2
 sendTareCommand KEYWORD2
 persistTare KEYWORD2
 
+getTapDetector	KEYWORD2
 getTimeStamp	KEYWORD2
 getStepCount	KEYWORD2
 getStabilityClassification	KEYWORD2

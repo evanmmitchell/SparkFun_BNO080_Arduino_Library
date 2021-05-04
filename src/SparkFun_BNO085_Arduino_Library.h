@@ -136,6 +136,8 @@ public:
 
 	void softReset();	  //Try to reset the IMU via software
 	uint8_t resetReason(); //Query the IMU for the reason it last reset
+	void modeOn();	  //Use the executable channel to turn the BNO on
+	void modeSleep();	  //Use the executable channel to put the BNO to sleep
 
 	float qToFloat(int16_t fixedPointValue, uint8_t qPoint); //Given a Q value, converts fixed point floating to regular floating point number
 
@@ -155,6 +157,7 @@ public:
 	void enableLinearAccelerometer(long microsBetweenReports);
 	void enableGyro(long microsBetweenReports);
 	void enableMagnetometer(long microsBetweenReports);
+	void enableTapDetector(long microsBetweenReports);
 	void enableStepCounter(long microsBetweenReports);
 	void enableStabilityClassifier(long microsBetweenReports);
 	void enableActivityClassifier(long microsBetweenReports, uint32_t activitiesToEnable, uint8_t (&activityConfidences)[9]);
@@ -218,6 +221,7 @@ public:
 	void tareAllAxes(uint8_t basisVector);
 	void tareZAxis(uint8_t basisVector);
 
+	uint8_t getTapDetector();
 	uint32_t getTimeStamp();
 	uint16_t getStepCount();
 	uint8_t getStabilityClassification();
@@ -285,6 +289,7 @@ private:
 	uint16_t rawMagX, rawMagY, rawMagZ, magAccuracy;
 	uint16_t rawQuatI, rawQuatJ, rawQuatK, rawQuatReal, rawQuatRadianAccuracy, quatAccuracy;
 	uint16_t rawFastGyroX, rawFastGyroY, rawFastGyroZ;
+	uint8_t tapDetector;
 	uint16_t stepCount;
 	uint32_t timeStamp;
 	uint8_t stabilityClassifier;

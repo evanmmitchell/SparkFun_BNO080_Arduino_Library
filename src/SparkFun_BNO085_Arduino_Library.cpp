@@ -345,6 +345,10 @@ uint16_t BNO085::parseInputReport(void)
 		// not game rot vector and not ar/vr stabilized rotation vector
 		rawQuatRadianAccuracy = data5;
 	}
+	else if (shtpData[5] == SENSOR_REPORTID_TAP_DETECTOR)
+	{
+		tapDetector = shtpData[5 + 4]; //Byte 4 only
+	}
 	else if (shtpData[5] == SENSOR_REPORTID_STEP_COUNTER)
 	{
 		stepCount = data3; //Bytes 8/9
@@ -699,6 +703,14 @@ float BNO085::getFastGyroZ()
 	return (gyro);
 }
 
+//Return the tap detector
+uint8_t BNO085::getTapDetector()
+{
+	uint8_t previousTapDetector = tapDetector;
+	tapDetector = 0; //Reset so user code sees exactly one tap
+	return (previousTapDetector);
+}
+
 //Return the step count
 uint16_t BNO085::getStepCount()
 {
@@ -879,7 +891,7 @@ bool BNO085::readFRSdata(uint16_t recordID, uint8_t startLocation, uint8_t words
 			//We have the packet, inspect it for the right contents
 			//See page 40. Report ID should be 0xF3 and the FRS types should match the thing we requested
 			if (shtpData[0] == SHTP_REPORT_FRS_READ_RESPONSE)
-				if (((uint16_t)shtpData[13] << 8 | shtpData[12]) == recordID)
+				if (((((uint16_t)shtpData[13]) << 8) | shtpData[12]) == recordID)
 					break; //This packet is one we are looking for
 		}
 
@@ -920,6 +932,42 @@ bool BNO085::readFRSdata(uint16_t recordID, uint8_t startLocation, uint8_t words
 void BNO085::softReset(void)
 {
 	shtpData[0] = 1; //Reset
+
+	//Attempt to start communication with sensor
+	sendPacket(CHANNEL_EXECUTABLE, 1); //Transmit packet on channel 1, 1 byte
+
+	//Read all incoming data and flush it
+	delay(50);
+	while (receivePacket() == true)
+		; //delay(1);
+	delay(50);
+	while (receivePacket() == true)
+		; //delay(1);
+}
+
+//Set the operating mode to "On"
+//(This one is for @jerabaul29)
+void BNO085::modeOn(void)
+{
+	shtpData[0] = 2; //On
+
+	//Attempt to start communication with sensor
+	sendPacket(CHANNEL_EXECUTABLE, 1); //Transmit packet on channel 1, 1 byte
+
+	//Read all incoming data and flush it
+	delay(50);
+	while (receivePacket() == true)
+		; //delay(1);
+	delay(50);
+	while (receivePacket() == true)
+		; //delay(1);
+}
+
+//Set the operating mode to "Sleep"
+//(This one is for @jerabaul29)
+void BNO085::modeSleep(void)
+{
+	shtpData[0] = 3; //Sleep
 
 	//Attempt to start communication with sensor
 	sendPacket(CHANNEL_EXECUTABLE, 1); //Transmit packet on channel 1, 1 byte
@@ -1016,6 +1064,12 @@ void BNO085::enableMagnetometer(long microsBetweenReports)
 void BNO085::enableGyroIntegratedRotationVector(long microsBetweenReports)
 {
 	setFeatureCommand(SENSOR_REPORTID_GYRO_INTEGRATED_ROTATION_VECTOR, microsBetweenReports);
+}
+
+//Sends the packet to enable the tap detector
+void BNO085::enableTapDetector(long microsBetweenReports)
+{
+	setFeatureCommand(SENSOR_REPORTID_TAP_DETECTOR, microsBetweenReports);
 }
 
 //Sends the packet to enable the step counter
